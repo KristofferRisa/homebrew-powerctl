@@ -29,10 +29,10 @@ class PowerctlCli < Formula
   end
 
   def install
-    bin.install "powerctl-cli"
+    bin.install "powerctl"
   end
 
   test do
-    assert_match "powerctl-cli", shell_output("#{bin}/powerctl-cli --version")
+    assert_match "powerctl", shell_output("#{bin}/powerctl --version")
   end
 end

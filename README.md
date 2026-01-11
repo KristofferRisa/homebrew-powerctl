@@ -19,6 +19,13 @@ Or install directly with a single command:
 brew install kristofferrisa/powerctl/powerctl-cli
 ```
 
+## Usage
+
+After installation, use the `powerctl` command:
+```bash
+powerctl --help
+```
+
 ## About powerctl-cli
 
 powerctl-cli provides:
