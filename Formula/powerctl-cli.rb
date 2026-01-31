@@ -1,30 +1,30 @@
 class PowerctlCli < Formula
   desc "CLI tool for monitoring electricity consumption and tracking power costs via Tibber"
   homepage "https://github.com/KristofferRisa/powerctl-cli"
-  version "0.2.0"
+  version "0.2.1"
   license "MIT"
 
   on_macos do
     on_intel do
-      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v0.2.0/powerctl-cli_0.2.0_darwin_amd64.tar.gz"
-      sha256 "a6d285f940fbcaa28da1d63a3d64526786673c2a2dc17f66b7f40f851c577f5c"
+      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v0.2.1/powerctl-cli_0.2.1_darwin_amd64.tar.gz"
+      sha256 "e0da7fc485f46a0e791d10846dcdf7865be39f7beaaf378cbf97223b98449f55"
     end
 
     on_arm do
-      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v0.2.0/powerctl-cli_0.2.0_darwin_arm64.tar.gz"
-      sha256 "67459b037a165cf85e390c3e3322f55e2e8735292974e64c37b208e8ae49c1e4"
+      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v0.2.1/powerctl-cli_0.2.1_darwin_arm64.tar.gz"
+      sha256 "70d25be799db8129a68abfb03da719dda0d2c5e476616f4495b8c1ba8a726bc7"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v0.2.0/powerctl-cli_0.2.0_linux_amd64.tar.gz"
-      sha256 "f05493b50d78745f4630d407e7d25f4a21b300d6bb58d6b563a544dcc93455a1"
+      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v0.2.1/powerctl-cli_0.2.1_linux_amd64.tar.gz"
+      sha256 "59d2a26190ebdf3e286bea2d34d12c71e92128bcb08b05cae3532da37f73945f"
     end
 
     on_arm do
-      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v0.2.0/powerctl-cli_0.2.0_linux_arm64.tar.gz"
-      sha256 "c66db94ef11dc1061fd91cda46a3a9bf195ad6958f6a893ca5a85e4f440edb43"
+      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v0.2.1/powerctl-cli_0.2.1_linux_arm64.tar.gz"
+      sha256 "4e6b5fe995f49099c1d282c0574814a1d21a8b7b1aac74f55aa52508158aba50"
     end
   end
 
