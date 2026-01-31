@@ -1,0 +1,139 @@
+name: Update Formula
+
+on:
+  repository_dispatch:
+    types: [release-published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to update to (e.g., 0.2.1)'
+        required: true
+        type: string
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            VERSION="${{ github.event.client_payload.version }}"
+          else
+            VERSION="${{ inputs.version }}"
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Updating to version ${VERSION}"
+
+      - name: Download and hash darwin amd64
+        id: darwin_amd64
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          URL="https://github.com/KristofferRisa/powerctl-cli/releases/download/v${VERSION}/powerctl-cli_${VERSION}_darwin_amd64.tar.gz"
+          curl -L -o darwin_amd64.tar.gz "$URL"
+          SHA256=$(sha256sum darwin_amd64.tar.gz | cut -d' ' -f1)
+          echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
+          echo "Darwin AMD64 SHA256: ${SHA256}"
+
+      - name: Download and hash darwin arm64
+        id: darwin_arm64
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          URL="https://github.com/KristofferRisa/powerctl-cli/releases/download/v${VERSION}/powerctl-cli_${VERSION}_darwin_arm64.tar.gz"
+          curl -L -o darwin_arm64.tar.gz "$URL"
+          SHA256=$(sha256sum darwin_arm64.tar.gz | cut -d' ' -f1)
+          echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
+          echo "Darwin ARM64 SHA256: ${SHA256}"
+
+      - name: Download and hash linux amd64
+        id: linux_amd64
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          URL="https://github.com/KristofferRisa/powerctl-cli/releases/download/v${VERSION}/powerctl-cli_${VERSION}_linux_amd64.tar.gz"
+          curl -L -o linux_amd64.tar.gz "$URL"
+          SHA256=$(sha256sum linux_amd64.tar.gz | cut -d' ' -f1)
+          echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
+          echo "Linux AMD64 SHA256: ${SHA256}"
+
+      - name: Download and hash linux arm64
+        id: linux_arm64
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          URL="https://github.com/KristofferRisa/powerctl-cli/releases/download/v${VERSION}/powerctl-cli_${VERSION}_linux_arm64.tar.gz"
+          curl -L -o linux_arm64.tar.gz "$URL"
+          SHA256=$(sha256sum linux_arm64.tar.gz | cut -d' ' -f1)
+          echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
+          echo "Linux ARM64 SHA256: ${SHA256}"
+
+      - name: Update formula
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          DARWIN_AMD64_SHA="${{ steps.darwin_amd64.outputs.sha256 }}"
+          DARWIN_ARM64_SHA="${{ steps.darwin_arm64.outputs.sha256 }}"
+          LINUX_AMD64_SHA="${{ steps.linux_amd64.outputs.sha256 }}"
+          LINUX_ARM64_SHA="${{ steps.linux_arm64.outputs.sha256 }}"
+
+          cat > Formula/powerctl-cli.rb << 'EOF'
+class PowerctlCli < Formula
+  desc "CLI tool for monitoring electricity consumption and tracking power costs via Tibber"
+  homepage "https://github.com/KristofferRisa/powerctl-cli"
+  version "VERSION_PLACEHOLDER"
+  license "MIT"
+
+  on_macos do
+    on_intel do
+      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/vVERSION_PLACEHOLDER/powerctl-cli_VERSION_PLACEHOLDER_darwin_amd64.tar.gz"
+      sha256 "DARWIN_AMD64_SHA_PLACEHOLDER"
+    end
+
+    on_arm do
+      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/vVERSION_PLACEHOLDER/powerctl-cli_VERSION_PLACEHOLDER_darwin_arm64.tar.gz"
+      sha256 "DARWIN_ARM64_SHA_PLACEHOLDER"
+    end
+  end
+
+  on_linux do
+    on_intel do
+      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/vVERSION_PLACEHOLDER/powerctl-cli_VERSION_PLACEHOLDER_linux_amd64.tar.gz"
+      sha256 "LINUX_AMD64_SHA_PLACEHOLDER"
+    end
+
+    on_arm do
+      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/vVERSION_PLACEHOLDER/powerctl-cli_VERSION_PLACEHOLDER_linux_arm64.tar.gz"
+      sha256 "LINUX_ARM64_SHA_PLACEHOLDER"
+    end
+  end
+
+  def install
+    bin.install "powerctl"
+  end
+
+  test do
+    assert_match "powerctl", shell_output("#{bin}/powerctl --version")
+  end
+end
+EOF
+
+          sed -i "s/VERSION_PLACEHOLDER/${VERSION}/g" Formula/powerctl-cli.rb
+          sed -i "s/DARWIN_AMD64_SHA_PLACEHOLDER/${DARWIN_AMD64_SHA}/g" Formula/powerctl-cli.rb
+          sed -i "s/DARWIN_ARM64_SHA_PLACEHOLDER/${DARWIN_ARM64_SHA}/g" Formula/powerctl-cli.rb
+          sed -i "s/LINUX_AMD64_SHA_PLACEHOLDER/${LINUX_AMD64_SHA}/g" Formula/powerctl-cli.rb
+          sed -i "s/LINUX_ARM64_SHA_PLACEHOLDER/${LINUX_ARM64_SHA}/g" Formula/powerctl-cli.rb
+
+          echo "Updated formula:"
+          cat Formula/powerctl-cli.rb
+
+      - name: Commit and push changes
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/powerctl-cli.rb
+          git commit -m "Update powerctl-cli to v${VERSION}"
+          git push
