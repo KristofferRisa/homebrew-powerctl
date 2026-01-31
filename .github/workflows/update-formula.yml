@@ -79,52 +79,46 @@ jobs:
           LINUX_AMD64_SHA="${{ steps.linux_amd64.outputs.sha256 }}"
           LINUX_ARM64_SHA="${{ steps.linux_arm64.outputs.sha256 }}"
 
-          cat > Formula/powerctl-cli.rb << 'EOF'
-class PowerctlCli < Formula
-  desc "CLI tool for monitoring electricity consumption and tracking power costs via Tibber"
-  homepage "https://github.com/KristofferRisa/powerctl-cli"
-  version "VERSION_PLACEHOLDER"
-  license "MIT"
+          cat > Formula/powerctl-cli.rb << EOF
+          class PowerctlCli < Formula
+            desc "CLI tool for monitoring electricity consumption and tracking power costs via Tibber"
+            homepage "https://github.com/KristofferRisa/powerctl-cli"
+            version "${VERSION}"
+            license "MIT"
 
-  on_macos do
-    on_intel do
-      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/vVERSION_PLACEHOLDER/powerctl-cli_VERSION_PLACEHOLDER_darwin_amd64.tar.gz"
-      sha256 "DARWIN_AMD64_SHA_PLACEHOLDER"
-    end
+            on_macos do
+              on_intel do
+                url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v${VERSION}/powerctl-cli_${VERSION}_darwin_amd64.tar.gz"
+                sha256 "${DARWIN_AMD64_SHA}"
+              end
 
-    on_arm do
-      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/vVERSION_PLACEHOLDER/powerctl-cli_VERSION_PLACEHOLDER_darwin_arm64.tar.gz"
-      sha256 "DARWIN_ARM64_SHA_PLACEHOLDER"
-    end
-  end
+              on_arm do
+                url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v${VERSION}/powerctl-cli_${VERSION}_darwin_arm64.tar.gz"
+                sha256 "${DARWIN_ARM64_SHA}"
+              end
+            end
 
-  on_linux do
-    on_intel do
-      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/vVERSION_PLACEHOLDER/powerctl-cli_VERSION_PLACEHOLDER_linux_amd64.tar.gz"
-      sha256 "LINUX_AMD64_SHA_PLACEHOLDER"
-    end
+            on_linux do
+              on_intel do
+                url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v${VERSION}/powerctl-cli_${VERSION}_linux_amd64.tar.gz"
+                sha256 "${LINUX_AMD64_SHA}"
+              end
 
-    on_arm do
-      url "https://github.com/KristofferRisa/powerctl-cli/releases/download/vVERSION_PLACEHOLDER/powerctl-cli_VERSION_PLACEHOLDER_linux_arm64.tar.gz"
-      sha256 "LINUX_ARM64_SHA_PLACEHOLDER"
-    end
-  end
+              on_arm do
+                url "https://github.com/KristofferRisa/powerctl-cli/releases/download/v${VERSION}/powerctl-cli_${VERSION}_linux_arm64.tar.gz"
+                sha256 "${LINUX_ARM64_SHA}"
+              end
+            end
 
-  def install
-    bin.install "powerctl"
-  end
+            def install
+              bin.install "powerctl"
+            end
 
-  test do
-    assert_match "powerctl", shell_output("#{bin}/powerctl --version")
-  end
-end
-EOF
-
-          sed -i "s/VERSION_PLACEHOLDER/${VERSION}/g" Formula/powerctl-cli.rb
-          sed -i "s/DARWIN_AMD64_SHA_PLACEHOLDER/${DARWIN_AMD64_SHA}/g" Formula/powerctl-cli.rb
-          sed -i "s/DARWIN_ARM64_SHA_PLACEHOLDER/${DARWIN_ARM64_SHA}/g" Formula/powerctl-cli.rb
-          sed -i "s/LINUX_AMD64_SHA_PLACEHOLDER/${LINUX_AMD64_SHA}/g" Formula/powerctl-cli.rb
-          sed -i "s/LINUX_ARM64_SHA_PLACEHOLDER/${LINUX_ARM64_SHA}/g" Formula/powerctl-cli.rb
+            test do
+              assert_match "powerctl", shell_output("#{bin}/powerctl --version")
+            end
+          end
+          EOF
 
           echo "Updated formula:"
           cat Formula/powerctl-cli.rb
