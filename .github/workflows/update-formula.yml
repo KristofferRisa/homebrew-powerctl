@@ -131,3 +131,52 @@ jobs:
           git add Formula/powerctl-cli.rb
           git commit -m "Update powerctl-cli to v${VERSION}"
           git push
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Create release notes
+          cat > release_notes.md << EOF
+          ## Homebrew Formula Update
+
+          Updated powerctl-cli formula to version **v${VERSION}**.
+
+          ### Installation
+
+          \`\`\`bash
+          brew tap kristofferrisa/powerctl
+          brew install powerctl-cli
+          \`\`\`
+
+          Or upgrade if already installed:
+
+          \`\`\`bash
+          brew update
+          brew upgrade powerctl-cli
+          \`\`\`
+
+          ### Details
+
+          This release corresponds to [powerctl-cli v${VERSION}](https://github.com/KristofferRisa/powerctl-cli/releases/tag/v${VERSION}).
+
+          **Supported Platforms:**
+          - macOS (Intel & Apple Silicon)
+          - Linux (amd64 & arm64)
+
+          **SHA256 Checksums:**
+          - Darwin AMD64: \`${{ steps.darwin_amd64.outputs.sha256 }}\`
+          - Darwin ARM64: \`${{ steps.darwin_arm64.outputs.sha256 }}\`
+          - Linux AMD64: \`${{ steps.linux_amd64.outputs.sha256 }}\`
+          - Linux ARM64: \`${{ steps.linux_arm64.outputs.sha256 }}\`
+          EOF
+
+          # Create or update release
+          gh release create "v${VERSION}" \
+            --title "powerctl-cli v${VERSION}" \
+            --notes-file release_notes.md \
+            || gh release edit "v${VERSION}" \
+            --title "powerctl-cli v${VERSION}" \
+            --notes-file release_notes.md

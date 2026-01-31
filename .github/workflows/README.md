@@ -55,6 +55,7 @@ You can manually trigger an update from the Actions tab:
 2. Calculates SHA256 checksums for each artifact
 3. Updates the `Formula/powerctl-cli.rb` file with the new version and checksums
 4. Commits and pushes the changes to the main branch
+5. Creates a GitHub Release in this repository with installation instructions and checksums
 
 ## Testing
 
