@@ -9,14 +9,19 @@ Tap this repository:
 brew tap kristofferrisa/powerctl
 ```
 
-Install powerctl-cli:
+Install the cask (v0.4.0+):
 ```bash
-brew install powerctl-cli
+brew install --cask powerctl
 ```
 
-Or install directly with a single command:
+Or in one command:
 ```bash
-brew install kristofferrisa/powerctl/powerctl-cli
+brew install --cask kristofferrisa/powerctl/powerctl
+```
+
+Still on the old `powerctl-cli` formula? Replace it with:
+```bash
+brew uninstall powerctl-cli && brew install --cask kristofferrisa/powerctl/powerctl
 ```
 
 ## Usage
