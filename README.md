@@ -41,3 +41,13 @@ powerctl-cli provides:
 - Cross-platform support (Linux, macOS, Windows)
 
 For more information, see the [powerctl-cli repository](https://github.com/KristofferRisa/powerctl-cli).
+
+## Maintaining this tap
+
+`Casks/powerctl.rb` is generated output — **do not edit it by hand.**
+
+GoReleaser writes and pushes it from the [powerctl-cli](https://github.com/KristofferRisa/powerctl-cli)
+release workflow on every tagged release, via the `homebrew_casks` block in
+`.goreleaser.yml`. To ship a new version, tag a release there; the cask lands
+here automatically. Edits made directly to this repository are overwritten by
+the next release.
